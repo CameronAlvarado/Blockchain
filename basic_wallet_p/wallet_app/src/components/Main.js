@@ -9,6 +9,7 @@ function Main() {
 
   useEffect(() => {
     getChain();
+    getLast();
   }, []);
 
   function getChain() {
@@ -20,11 +21,22 @@ function Main() {
       .catch(error => {
         // handle error
         console.log(error);
-      })
-      .then(() => {
-        // always executed
       });
-    // setState({ id: client });
+  }
+
+  function getLast() {
+    Axios.get("http://0.0.0.0:5000/last_block")
+      .then(response => {
+        // handle success
+        console.log(response);
+        const last_block = response.data.last_block.transactions[0];
+        const id = last_block.recipient;
+        setState({ id: id });
+      })
+      .catch(error => {
+        // handle error
+        console.log(error);
+      });
   }
 
   return (

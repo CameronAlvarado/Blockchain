@@ -142,11 +142,7 @@ print(blockchain.hash(blockchain.last_block))
 
 @app.route('/transaction/new', methods=['POST'])
 def receive_new_transaction():
-    #     * use `request.get_json()` to pull the data out of the POST
-    # * check that 'sender', 'recipient', and 'amount' are present
-    #     * return a 400 error using `jsonify(response)` with a 'message'
-    # * upon success, return a 'message' indicating index of the block
-    #   containing the transaction
+
     data = request.get_json()
 
     required = ['sender', 'recipient', 'amount']
