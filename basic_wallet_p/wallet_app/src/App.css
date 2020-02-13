@@ -1,5 +1,9 @@
 body {
-  background-color: grey;
+  background-color: rgb(160, 160, 160);
+}
+
+h2 {
+  text-decoration: underline;
 }
 
 .App,
