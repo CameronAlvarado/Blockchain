@@ -82,21 +82,21 @@ class Blockchain(object):
     def last_block(self):
         return self.chain[-1]
 
-    # def proof_of_work(self, block):
-    #     """
-    #     Simple Proof of Work Algorithm
-    #     Stringify the block and look for a proof.
-    #     Loop through possibilities, checking each one against `valid_proof`
-    #     in an effort to find a number that is a valid proof
-    #     :return: A valid proof for the provided block
-    #     """
+    def proof_of_work(self, block):  # only needed by client
+        """
+        Simple Proof of Work Algorithm
+        Stringify the block and look for a proof.
+        Loop through possibilities, checking each one against `valid_proof`
+        in an effort to find a number that is a valid proof
+        :return: A valid proof for the provided block
+        """
 
-    #     block_string = json.dumps(block, sort_keys=True)
-    #     proof = 0
-    #     while self.valid_proof(block_string, proof) is False:
-    #         proof += 1
+        block_string = json.dumps(block, sort_keys=True)
+        proof = 0
+        while self.valid_proof(block_string, proof) is False:
+            proof += 1
 
-    #     return proof
+        return proof
 
     @staticmethod
     def valid_proof(block_string, proof):
@@ -128,36 +128,21 @@ print(blockchain.chain)
 print(blockchain.hash(blockchain.last_block))
 
 
-# @app.route('/mine', methods=['GET'])
-# def mine():
-#     # Run the proof of work algorithm to get the next proof
-#     proof = blockchain.proof_of_work(blockchain.last_block)
-
-#     # Forge the new Block by adding it to the chain with the proof
-#     previous_hash = blockchain.hash(blockchain.last_block)
-#     new_block = blockchain.new_block(proof, previous_hash)
-
-#     response = {
-#         # TODO: Send a JSON response with the new block
-#         "block": new_block
-#     }
-
-#     return jsonify(response), 200
-
-@app.route('/mine', methods=['POST'])
+@app.route('/mine', methods=['GET'])
 def mine():
-    data = request.get_json()
-    if data['index'] is None or data['proof'] is None:
-        return jsonify("Please include both \'index\' and \'proof\'."), 400
-    else:
-        valid = blockchain.valid_proof(blockchain.last_block, data['proof'])
-        if valid is False:
-            return jsonify("Not valid.")
-        response = {
-            'pass': 'true',
-            'data': data
-        }
-        return jsonify(data), 200
+    # Run the proof of work algorithm to get the next proof
+    proof = blockchain.proof_of_work(blockchain.last_block)
+
+    # Forge the new Block by adding it to the chain with the proof
+    previous_hash = blockchain.hash(blockchain.last_block)
+    new_block = blockchain.new_block(proof, previous_hash)
+
+    response = {
+        # TODO: Send a JSON response with the new block
+        "block": new_block
+    }
+
+    return jsonify(response), 200
 
 
 @app.route('/chain', methods=['GET'])
