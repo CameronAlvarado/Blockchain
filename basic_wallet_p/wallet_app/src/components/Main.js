@@ -5,7 +5,8 @@ import "../App.css";
 function Main() {
   const [state, setState] = useState({
     id: "",
-    balance: 0
+    balance: 0,
+    trans: 0
   });
 
   useEffect(() => {
@@ -20,15 +21,17 @@ function Main() {
         console.log("Chain:", response);
         const chain = response.data.chain;
         var balance = 0;
+        var trans = 0;
         var name = "";
         chain.forEach(block => {
-          block.transactions.forEach(trans => {
-            const id = trans.recipient;
-            console.log(id);
+          block.transactions.forEach(element => {
+            const id = element.recipient;
             name = id;
-            trans.recipient === id ? (balance += 1) : (balance = balance);
+            element.recipient === id
+              ? (balance += 1) && (trans += 1)
+              : (balance = balance);
           });
-          setState({ id: name, balance: balance });
+          setState({ id: name, balance: balance, trans: trans });
         });
       })
       .catch(error => {
@@ -73,6 +76,7 @@ function Main() {
       <p>{state.balance}</p>
 
       <h2>Transactions</h2>
+      <p>{state.trans}</p>
     </div>
   );
 }
