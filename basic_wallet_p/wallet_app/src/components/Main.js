@@ -10,7 +10,7 @@ function Main() {
 
   useEffect(() => {
     getChain();
-    getId();
+    // getId();
     // getLast();
   }, []);
 
@@ -20,12 +20,15 @@ function Main() {
         console.log("Chain:", response);
         const chain = response.data.chain;
         var balance = 0;
+        var name = "";
         chain.forEach(block => {
           block.transactions.forEach(trans => {
             const id = trans.recipient;
+            console.log(id);
+            name = id;
             trans.recipient === id ? (balance += 1) : (balance = balance);
           });
-          setState({ balance: balance });
+          setState({ id: name, balance: balance });
         });
       })
       .catch(error => {
@@ -34,13 +37,13 @@ function Main() {
       });
   }
 
-  function getId() {
-    Axios.get(
-      "/Users/cameronalvarado/Documents/CS/Blockchain/client_mining_p/my_id.txt"
-    ).then(response => {
-      console.log("Id:", response);
-    });
-  }
+  //   function getId() {
+  //     Axios.get(
+  //       "/Users/cameronalvarado/Documents/CS/Blockchain/client_mining_p/my_id.txt"
+  //     ).then(response => {
+  //       console.log("Id:", response);
+  //     });
+  //   }
 
   function getLast() {
     Axios.get("http://0.0.0.0:5000/last_block")
