@@ -4,19 +4,29 @@ import "../App.css";
 
 function Main() {
   const [state, setState] = useState({
-    id: ""
+    id: "",
+    balance: 0
   });
 
   useEffect(() => {
     getChain();
-    getLast();
+    getId();
+    // getLast();
   }, []);
 
   function getChain() {
     Axios.get("http://0.0.0.0:5000/chain")
       .then(response => {
-        // handle success
-        console.log(response);
+        console.log("Chain:", response);
+        const chain = response.data.chain;
+        var balance = 0;
+        chain.forEach(block => {
+          block.transactions.forEach(trans => {
+            const id = trans.recipient;
+            trans.recipient === id ? (balance += 1) : (balance = balance);
+          });
+          setState({ balance: balance });
+        });
       })
       .catch(error => {
         // handle error
@@ -24,13 +34,25 @@ function Main() {
       });
   }
 
+  function getId() {
+    Axios.get(
+      "/Users/cameronalvarado/Documents/CS/Blockchain/client_mining_p/my_id.txt"
+    ).then(response => {
+      console.log("Id:", response);
+    });
+  }
+
   function getLast() {
     Axios.get("http://0.0.0.0:5000/last_block")
       .then(response => {
-        // handle success
-        console.log(response);
-        const last_block = response.data.last_block.transactions[0];
-        const id = last_block.recipient;
+        console.log("Last:", response);
+        const transactions = response.data.last_block.transactions;
+        const id = transactions[0].recipient;
+
+        // var balance = 0;
+        // transactions.forEach(trans => {
+        //   trans.recipient === id ? (balance += 1) : (balance = balance);
+        // });
         setState({ id: id });
       })
       .catch(error => {
@@ -45,6 +67,7 @@ function Main() {
       <p>{state.id}</p>
 
       <h2>Balance</h2>
+      <p>{state.balance}</p>
 
       <h2>Transactions</h2>
     </div>
